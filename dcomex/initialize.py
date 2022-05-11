@@ -59,7 +59,7 @@ def install_virtual_envs(envs, baseDir):
     p_version = platform.python_version()
 
     if "python" in env_data:
-      p_version = env_data["python"]
+      p_version = env_data["python_version"]
 
     #install python version
     install_python_version(p_version)

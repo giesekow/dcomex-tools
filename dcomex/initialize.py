@@ -78,7 +78,7 @@ def install_virtual_envs(envs, baseDir):
         for rq in requirements:
           command = command + ["-r", os.path.join(baseDir, rq)]
 
-        subprocess.run(command)
+        subprocess.run(command, cwd=baseDir)
 
     env_paths[env_name] = env_python
 

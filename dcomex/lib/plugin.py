@@ -226,6 +226,10 @@ class Plugin:
             if var_name in kwargs:
               c = kwargs[var_name]
               val = kwargs[var_name]
+          if str(c).lower().__contains__("<base_dir>"):
+            data_path = self._data.get("path")
+            val = str(c).replace("<BASE_DIR>", data_path)
+
           updated_comm.append(val)
         final_command = updated_comm
 

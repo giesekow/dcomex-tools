@@ -1,9 +1,9 @@
 import json
-from lib.plugin_manager import PluginManager
-from lib.plugin import Plugin
-from lib.data import DataType, ScalarType
+from .lib.plugin_manager import PluginManager
+from .lib.plugin import Plugin
+from .lib.data import DataType, ScalarType
 import datetime,shlex
-from misc import load_json, save_json
+from .misc import load_json, save_json
 
 def handle_run(args, existing_outputs={}):
   if existing_outputs is None:

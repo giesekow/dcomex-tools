@@ -1,10 +1,10 @@
 #!/usr/bin/env python3
 
 from __future__ import print_function
-from arg_parser import parse_args
-from initialize import handle_init
-from plugin import handle_plugins
-from process import handle_run
+from .arg_parser import parse_args
+from .initialize import handle_init
+from .plugin import handle_plugins
+from .process import handle_run
 
 def main():
   args = parse_args()
@@ -21,7 +21,7 @@ def main():
     print(f"Submodule {submodule} has no handler!")
 
 def handle_gui(args):
-  from gui import showGui
+  from .gui import showGui
   showGui()
 
 

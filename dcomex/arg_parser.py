@@ -4,8 +4,8 @@ from __future__ import print_function
 import os, argparse, json, sys
 from argparse import Action
 import yaml
-from plugin import handle_plugins
-from process import handle_run
+from .plugin import handle_plugins
+from .process import handle_run
 
 INSTALLERS = ['local', 'git']
 

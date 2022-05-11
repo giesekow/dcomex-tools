@@ -1,6 +1,6 @@
 from __future__ import print_function
-from misc import load_json, json
-from lib.plugin_manager import PluginManager, PluginType
+from .misc import load_json, json
+from .lib.plugin_manager import PluginManager, PluginType
 import os, json, git, shutil
 
 def handle_plugins(args):

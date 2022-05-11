@@ -1,8 +1,8 @@
 import os, shutil, subprocess
 import tempfile, platform
-from misc import clone_repo, load_json, save_json
-from arg_parser import parse_args
-from plugin import handle_install
+from .misc import clone_repo, load_json, save_json
+from .arg_parser import parse_args
+from .plugin import handle_install
 
 GIT_REPO = "https://github.com/giesekow/dcomex-modules.git"
 SETUP_FILE = "setup.sh"

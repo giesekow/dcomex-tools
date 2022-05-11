@@ -1,4 +1,5 @@
 #!/bin/bash
+pip install build
 
 rm -rf build
 rm -rf dist

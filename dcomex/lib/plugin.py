@@ -1,5 +1,5 @@
 from datetime import datetime
-import os, subprocess, json, pathlib, threading, sys, tempfile
+import os, subprocess, json, pathlib, threading, sys, tempfile, re
 from .data import DataType, ScalarType
 from .utils import executionCode
 from .plugin_manager import PluginType
@@ -31,7 +31,9 @@ class Worker(threading.Thread):
 
     with tempfile.NamedTemporaryFile(delete=True, suffix=".json") as tmp_file:
       data = {"function_name": function_name, "args": args, "kwargs": kwargs, "modules": modulePaths, "output": tmp_file.name}
-      subprocess.run([executable, "-c", executionCode], input=str.encode(json.dumps(data)))
+      env = os.environ.copy()
+      env["PYTHON_EXECUTABLE"] = executable
+      subprocess.run([executable, "-c", executionCode], input=str.encode(json.dumps(data)), env=env)
       output = json.load(tmp_file)
       self.output = output
       self.done = True
@@ -221,6 +223,14 @@ class Plugin:
         updated_comm = []
         for c in final_command:
           val = c
+          input_replace = re.findall(r"\${\w+}", str(c))
+
+          for irep in input_replace:
+            var_name = irep[2:-1]
+            if var_name in kwargs:
+              c = str(c).replace(irep, kwargs[var_name])
+              val = str(val).replace(irep, kwargs[var_name])
+
           if str(c).lower().startswith("$i:"):
             var_name = str(c)[3:]
             if var_name in kwargs:

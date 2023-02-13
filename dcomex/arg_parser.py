@@ -30,7 +30,7 @@ class UpdateAction(Action):
 
 def parse_args(params=None):
   parser = argparse.ArgumentParser(description='A Command line tool for the dicomex processing tool', add_help=True)
-  subparsers = parser.add_subparsers(dest='submodule')
+  subparsers = parser.add_subparsers(dest='submodule', required=True)
   
   gui = subparsers.add_parser('gui', description='Open the graphical user interface')
   app_init = subparsers.add_parser('init', description='Initialize the app')

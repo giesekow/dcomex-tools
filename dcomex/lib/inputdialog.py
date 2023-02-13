@@ -138,6 +138,8 @@ class InputDialog(QDialog):
                 input_data[k] = int(txt)
               elif s_type == ScalarType.FLOAT.value:
                 input_data[k] = float(txt)
+              else:
+                input_data[k] = txt
         
       if not k in input_data:
         if not df is None:

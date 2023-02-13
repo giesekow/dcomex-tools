@@ -1,7 +1,7 @@
 import subprocess, json
 from PyQt5 import QtCore
 from PyQt5.QtCore import QThread, pyqtSignal
-import subprocess, sys, json, tempfile
+import subprocess, sys, json, tempfile, os
 from .utils import executionCode
 from .plugin import Plugin
 
@@ -34,7 +34,9 @@ class QtWorker(QThread):
 
     with tempfile.NamedTemporaryFile(delete=True, suffix=".json") as tmp_file:
       data = {"function_name": function_name, "args": args, "kwargs": kwargs, "modules": modulePaths, "output": tmp_file.name}
-      subprocess.run([executable, "-c", executionCode], input=str.encode(json.dumps(data)))
+      env = os.environ.copy()
+      env["PYTHON_EXECUTABLE"] = executable
+      subprocess.run([executable, "-c", executionCode], input=str.encode(json.dumps(data)), env=env)
       output = json.load(tmp_file)
       self.output = output
       self.done = True

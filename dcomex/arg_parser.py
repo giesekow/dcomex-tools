@@ -54,7 +54,7 @@ def parse_args(params=None):
   plugin_install.add_argument('-g', '--group', dest='group', type=str, default=None,  help='The group to install the plugin to. Defaults to None')
   plugin_install.add_argument('-n', '--display', dest='display', type=str, default=None,  help='Plugin display name. Defaults to unique name')
   plugin_install.add_argument('--git', dest='git', action='store_true',  help='Installation path is a git repo')
-  plugin_install.add_argument('--viewer', dest='viewer', action='store_true',  help='Installation path is a git repo')
+  plugin_install.add_argument('--viewer', dest='viewer', action='store_true',  help='Plugin is a viewer')
 
   #Handle plugin remove action
   plugin_remove = plugin_subparsers.add_parser('remove', description='Remove a plugin')
@@ -65,12 +65,12 @@ def parse_args(params=None):
   plugin_list = plugin_subparsers.add_parser('list', description='List installed plugins')
 
   #Handle plugin info action
-  plugin_info = plugin_subparsers.add_parser('info', description='List installed plugins')
+  plugin_info = plugin_subparsers.add_parser('info', description='Show detailed information about a specific installed plugins')
   plugin_info.add_argument('plugin_name', metavar='plugin_name', type=str, help='The plugin to display the information for')
 
   #Handle plugin set action
-  plugin_set = plugin_subparsers.add_parser('set', description='List installed plugins')
-  plugin_set.add_argument('plugin_name', metavar='plugin_name', type=str, help='The plugin to display the information for')
+  plugin_set = plugin_subparsers.add_parser('set', description='Update information about an existing plugin')
+  plugin_set.add_argument('plugin_name', metavar='plugin_name', type=str, help='The plugin to update the information for')
   plugin_set.add_argument('-k', '--kwarg', dest='kwargs', action=UpdateAction, type=dict_load, default={}, help='Named set arguments for the plugin in yaml or json format')
 
 

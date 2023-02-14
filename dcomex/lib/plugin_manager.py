@@ -72,7 +72,8 @@ class PluginManager:
       return False, f"Plugin with name '{data.get('name')}' already exists"
 
     group = data.get("group")
-    if not group is None and type(group) == str:
+
+    if (not group is None) and type(group) == str:
       grps = self.find_group_by_name(group)
       if len(grps) > 0:
         data["group"] = grps[0].doc_id

@@ -158,10 +158,12 @@ def handle_install(args):
         "path": full_path,
         "settings": set_path,
         "type": ptype,
-        "group": group,
         "display": name if display is None else display,
         "viewer": is_viewer
       }
+
+      if (not group is None) and str(group).lower() != 'none':
+        plugin_data["group"] = group
 
       res, mes = pmanager.insert_plugin(plugin_data)
       if not res:

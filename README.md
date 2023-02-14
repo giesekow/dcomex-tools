@@ -41,7 +41,17 @@ optional arguments:
   -r, --install-requirements
                         Install requirements in the process [pyenv]
 ```
-You can add the `-r` switch to install other requirements (pyenv) if you don't already have it installed.
+* You can add the `-r` switch to install other requirements (pyenv, ants, etc.) if you don't already have it installed.
+* The initialization process might take some time to complete and it installs the default plugins into the working space
+* The default plugins include the follow:  
+  1. brat_preprocessor
+  2. brat_tissue
+  3. brat_segmentation
+  4. volume2mesh
+  5. itksnap (viewer)
+  6. paraview (viewer)
+  7. gmsh (viewer)
+
 
 ## The graphical User Interface
 The tool comes with a user interface that can be used to manage plugins and process data. To access the GUI run the code below:  
@@ -206,3 +216,6 @@ Multiple plugins can be channelled together to form a pipeline to do this use th
 `dcomex run [process-plugin] -i input_file:[path] --pipe [viewer-plugin]`
   * Where output from image processing has a different name compared to input to viewer, we can map the output from image process to the input of the viewer using the `-o` argument.  
   `dcome run [process-plugin] -i input_file:[path] -o [viewer_input]:[process_output] --pipe [viewer-plugin]`
+
+
+# Default Plugins

@@ -18,10 +18,13 @@ SHELL_SCRIPTS = {
   "get_virt_path": [
     "#!/bin/sh\n",
     "\n",
-    "source ~/.bashrc\n",
-    "pyenv activate $1\n",
-    "vpath=$(pyenv which python)",
-    "echo $vpath"
+    'eval "$(pyenv init -)"',
+    "\n",
+    'eval "$(pyenv virtualenv-init -)"',
+    "\n",
+    'vpath=$(pyenv prefix $1)',
+    "\n",
+    'echo $vpath'
   ]
 }
 
@@ -46,7 +49,7 @@ def handle_init(args):
     # install envs
     envs = {}
     if "environments" in install_data:
-      envs = install_virtual_envs(install_data["environments"])
+      envs = install_virtual_envs(install_data["environments"], tmp_folder)
 
     if "plugins" in install_data:
       install_plugins(install_data["plugins"], envs, tmp_folder)
@@ -94,11 +97,12 @@ def install_plugins(plugins, envs, baseDir):
     if plugin_path is None:
       continue
 
+    full_path = os.path.join(baseDir, plugin_path)
+    settings_file = os.path.join(full_path, plugin_settings)
+    
     if not os.path.exists(settings_file):
       continue
 
-    full_path = os.path.join(baseDir, plugin_path)
-    settings_file = os.path.join(full_path, plugin_settings)
     settings = load_json(settings_file)
 
     if not plugin_env is None and not plugin_env == "":
@@ -106,7 +110,7 @@ def install_plugins(plugins, envs, baseDir):
         settings["python"] = envs[plugin_env]
 
     os.remove(settings_file)
-    save_json(settings_file, settings)
+    save_json(settings, settings_file)
 
     plugin_base = os.path.join(PLUGIN_BASE, plugin_name)
 
@@ -116,7 +120,7 @@ def install_plugins(plugins, envs, baseDir):
 
     shutil.copytree(full_path, plugin_base)
     
-    command = ["install", plugin_name, plugin_base,
+    command = ["plugin", "install", plugin_name, plugin_base,
      "-s", os.path.join(plugin_base, plugin_settings),
      "-t", plugin.get("type", "python"),
      "-g", plugin.get("group"),
@@ -145,13 +149,17 @@ def create_virtual_env(p_version, env_name, baseDir):
   temp_script = os.path.join(baseDir, 'temp_script.sh')
 
   with open(temp_script, 'w') as script_file:
+    s_script = SHELL_SCRIPTS["get_virt_path"]
+    s_script[-3] = f"vpath=$(pyenv prefix {env_name})"
     script_file.writelines(SHELL_SCRIPTS["get_virt_path"])
   
   command = ["sh", temp_script, env_name]
   rc, vpath = run_command(command)
 
-  return rc == 0, vpath[len(vpath) - 1]
+  vpath = os.path.join(vpath[-2], "bin", "python")
+
+  return rc == 0, vpath
 
 def run_command(command):
   result = subprocess.run(command, stdout=subprocess.PIPE)
-  return result.returncode, str(result.stdout).split('\n')
+  return result.returncode, str(result.stdout.decode("utf-8")).split('\n')

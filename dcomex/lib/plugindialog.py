@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QPushButton, QVBoxLayout, QTableView, QDial
 from PyQt5.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QComboBox
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QTabWidget, QCheckBox
 from PyQt5.QtCore import Qt, QStandardPaths
-from .data import TableModel
+from .qtdata import TableModel
 from .plugin_manager import PluginManager, PluginType, PluginGroupType
 
 class PluginDialog(QDialog):

@@ -219,3 +219,88 @@ Multiple plugins can be channelled together to form a pipeline to do this use th
 
 
 # Default Plugins
+This section discusses the default plugins which are available through the `init` command. If you have not already initialize the tool then have a look at the [initialization section](#initialization-of-the-application).
+
+## BRAT Preprocessing Plugin
+This plugin takes as input t1, t1c, t2, fla images and outputs same modalities which have been co-registered and skullstripped.  
+
+The plugin can be executed using the command below:  
+```
+dcomex run brat_preprocessor -i t1:[t1-path] -i t1c:[t1c-path] -i t2:[t2-path] -i fla:[fla-path] -i outputDir:[output-dir]
+```
+
+where:  
+* `[t1-path]`: is the path to the t1 nifti file.
+* `[t1c-path]`: is the path to the t1c nifti file.
+* `[t2-path]`: is the path to the t2 nifti file.
+* `[fla-path]`: is the path to the flair nifti file.
+* `[output-dir]`: is path to a directory where output files will be saved.
+
+You can execute `dcomex run --help` to view other available arguments to the `run` command.
+
+## BRAT Segmentation (Tumor segmentation)
+This plugin takes as input t1, t1c, t2, fla images and outputs the tumor segmentation.  
+
+The plugin can be executed using the command below:  
+```
+dcomex run brat_segmentation -i t1:[t1-path] -i t1c:[t1c-path] -i t2:[t2-path] -i fla:[fla-path] -i outputDir:[output-dir]
+```
+
+where:  
+* `[t1-path]`: is the path to the t1 nifti file.
+* `[t1c-path]`: is the path to the t1c nifti file.
+* `[t2-path]`: is the path to the t2 nifti file.
+* `[fla-path]`: is the path to the flair nifti file.
+* `[output-dir]`: is path to a directory where output files will be saved.
+
+You can execute `dcomex run --help` to view other available arguments to the `run` command.
+
+
+## BRAT Tissue (Tissue segmentation)
+This plugin takes as input t1, image and outputs the tissue (wm, gm, csf) probabilities and class segmentation.  
+
+The plugin can be executed using the command below:  
+```
+dcomex run brat_tissue -i t1:[t1-path] -i threshold:[prob-threshold] -i outputDir:[output-dir]
+```
+
+where:  
+* `[t1-path]`: is the path to the t1 nifti file.
+* `[prob-threshold]`: is the value used to threshold the probabilities to obtain the bins and defaults to 0.5.
+* `[output-dir]`: is path to a directory where output files will be saved.
+
+You can execute `dcomex run --help` to view other available arguments to the `run` command.
+
+
+## Volume to Mesh
+This plugin takes a mask and features in nifti format and create a volumetric mesh from it.  
+
+The plugin can be executed using the command below:  
+```
+dcomex run volume2mesh -i mask:[mask-path] -i features:[feature-path-list] -i zoom_value:[zoom] -i r_start:[mask-min-value] -i r_end:[mask-max-value] -i outputDir:[output-dir]
+```
+
+where:  
+* `[mask-path]`: is the path to the mask nifti file.
+* `[feature-path-list]`: a list of file paths containing nifti image with features. This should be a json list.
+* `[zoom]`: a zooming factor applied to images before meshing defaults to 1 which applies not zoom.
+* `[mask-min-value]`: minimum value to consider within the provided mask.
+* `[mask-max-value]`: maximum value to consider within the provided mask.
+* `[output-dir]`: is path to a directory where output files will be saved.
+
+You can execute `dcomex run --help` to view other available arguments to the `run` command.
+
+## Viewers
+The following viewers are available through the initialization:
+* itksnap
+* paraview
+* gmsh
+
+They can be executed as 
+```
+dcomex run [viewer-name] -i data:[file-path]
+```
+where:  
+* `[viewer-name]`: is one of the viewers above.
+* `[file-path]`: is the file to be open in the viewer. This is optional and will open a blank viewer if not provided.
+* `itksnap` takes additional `-i seg:[seg-file-path]` argument which can be used to load a segmentation file.

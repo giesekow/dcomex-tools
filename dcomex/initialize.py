@@ -1,4 +1,4 @@
-import os, shutil, subprocess
+import os, shutil, subprocess, stat
 import tempfile, platform
 from .misc import clone_repo, load_json, save_json
 from .arg_parser import parse_args
@@ -6,6 +6,7 @@ from .plugin import handle_install
 
 GIT_REPO = "https://github.com/giesekow/dcomex-modules.git"
 SETUP_FILE = "setup.sh"
+PRE_SETUP_FILE = "pre_setup.sh"
 INSTALL_FILE = "install.json"
 
 # https://realpython.com/intro-to-pyenv/
@@ -28,6 +29,35 @@ SHELL_SCRIPTS = {
   ]
 }
 
+def copytree(src, dst, symlinks = False, ignore = None):
+  if not os.path.exists(dst):
+    os.makedirs(dst)
+    shutil.copystat(src, dst)
+  lst = os.listdir(src)
+  if ignore:
+    excl = ignore(src, lst)
+    lst = [x for x in lst if x not in excl]
+  for item in lst:
+    s = os.path.join(src, item)
+    d = os.path.join(dst, item)
+    if symlinks and os.path.islink(s):
+      if os.path.lexists(d):
+        os.remove(d)
+      os.symlink(os.readlink(s), d)
+      try:
+        st = os.lstat(s)
+        mode = stat.S_IMODE(st.st_mode)
+        os.lchmod(d, mode)
+      except:
+        pass # lchmod not available
+    elif os.path.isdir(s):
+      copytree(s, d, symlinks, ignore)
+    else:
+      try:
+        shutil.copy2(s, d)
+      except Exception as e:
+        print(f"Error: {e}")
+
 def handle_init(args):
   if os.path.isfile(IS_INITIALISED_FILE):
     print("Application already initialized!")
@@ -37,6 +67,10 @@ def handle_init(args):
 
   with tempfile.TemporaryDirectory() as tmp_folder:
     clone_repo(GIT_REPO, tmp_folder)
+
+    # Install pre-req (pyenv)
+    command = ["bash", os.path.join(tmp_folder, PRE_SETUP_FILE)]
+    subprocess.run(command)
 
     # Install requirements (pyenv)
     if args.install_requirements:
@@ -118,7 +152,7 @@ def install_plugins(plugins, envs, baseDir):
       print(f"Directory {plugin_base} already exist!")
       continue
 
-    shutil.copytree(full_path, plugin_base)
+    copytree(full_path, plugin_base, symlinks=True)
     
     command = ["plugin", "install", plugin_name, plugin_base,
      "-s", os.path.join(plugin_base, plugin_settings),

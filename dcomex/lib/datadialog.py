@@ -4,7 +4,8 @@ from PyQt5.QtWidgets import QHBoxLayout, QLabel, QLineEdit, QComboBox, QCheckBox
 from PyQt5.QtWidgets import QFileDialog, QMessageBox, QDateTimeEdit
 from PyQt5.QtCore import Qt
 from PyQt5.QtGui import QIntValidator, QDoubleValidator
-from .data import DataType, ScalarType, TableModel, ImageType
+from .data import DataType, ScalarType, ImageType
+from .qtdata import TableModel
 from .workspace import Workspace
 
 class DataDialog(QDialog):

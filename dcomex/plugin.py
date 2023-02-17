@@ -164,6 +164,8 @@ def handle_install(args):
 
       if (not group is None) and str(group).lower() != 'none':
         plugin_data["group"] = group
+      else:
+        plugin_data["group"] = None
       
       if (not display is None) and str(display).lower() != 'none':
         plugin_data["display"] = display

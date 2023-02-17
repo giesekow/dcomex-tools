@@ -108,6 +108,9 @@ class MainWindow(QMainWindow):
       pms = self._plugin_manager.find_plugin_by_group(None) if "is_none" in grp else self._plugin_manager.find_plugin_by_group(grp.doc_id)
 
       for d in pms:
+        if (d.get("group") is None) and (d.get("viewer") == True):
+          continue
+
         act = QAction(d.get("display"), self)
         act.triggered.connect(self.on_process_clicked(d.doc_id))
         sm.addAction(act)

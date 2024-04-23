@@ -1,4 +1,4 @@
-import subprocess, threading, sys, json, tempfile
+import subprocess, threading, sys, json, tempfile, os
 
 from numpy import searchsorted
 from .utils import executionCode
@@ -31,11 +31,17 @@ class Worker(threading.Thread):
     if modulePaths is None:
       modulePaths = []
 
-    with tempfile.NamedTemporaryFile(delete=True, suffix=".json") as tmp_file:
-      data = {"function_name": function_name, "args": args, "kwargs": kwargs, "modules": modulePaths, "output": tmp_file.name}
+    with tempfile.TemporaryDirectory() as tmp_dir:
+      tmp_file_name = os.path.join(tmp_dir, "job_results.json")
+      data = {"function_name": function_name, "args": args, "kwargs": kwargs, "modules": modulePaths, "output": tmp_file_name}
       subprocess.run([executable, "-c", executionCode], input=str.encode(json.dumps(data)))
-      output = json.load(tmp_file)
-      self.output = output
+
+      if os.path.exists(tmp_file_name):
+        with open(tmp_file_name, 'r') as tmp_file:
+          self.output = json.load(tmp_file)
+      else:
+        self.output = {}
+
       self.done = True
 
       if self.callback:
@@ -71,11 +77,17 @@ class QtWorker(QThread):
     if modulePaths is None:
       modulePaths = []
 
-    with tempfile.NamedTemporaryFile(delete=True, suffix=".json") as tmp_file:
-      data = {"function_name": function_name, "args": args, "kwargs": kwargs, "modules": modulePaths, "output": tmp_file.name}
+    with tempfile.TemporaryDirectory() as tmp_dir:
+      tmp_file_name = os.path.join(tmp_dir, "job_results.json")
+      data = {"function_name": function_name, "args": args, "kwargs": kwargs, "modules": modulePaths, "output": tmp_file_name}
       subprocess.run([executable, "-c", executionCode], input=str.encode(json.dumps(data)))
-      output = json.load(tmp_file)
-      self.output = output
+      
+      if os.path.exists(tmp_file_name):
+        with open(tmp_file_name, 'r') as tmp_file:
+          self.output = json.load(tmp_file)
+      else:
+        self.output = {}
+
       self.done = True
 
       self.completed.emit(self.output)

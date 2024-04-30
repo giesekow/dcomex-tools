@@ -140,7 +140,7 @@ class Viewer3D(QWidget):
   def load_image(self, filename, is_seg=False):
     img = nb.load(filename)
     img = nb.as_closest_canonical(img)
-    hdr = img.get_header()
+    hdr = img.header
     zooms = hdr.get_zooms()
     data = img.get_fdata()
     
